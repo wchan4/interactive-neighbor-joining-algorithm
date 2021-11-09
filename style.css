@@ -1,0 +1,50 @@
+#matrix{
+    table-layout:fixed;
+}
+
+.datalabel{
+    color:white;
+    background-color:gray;
+    width:50px;
+    height:50px;
+    border:2px solid transparent;
+}
+
+.data{
+    width:50px;
+    height:50px;
+    text-align:center;
+    font-weight:bold;
+    border: 1px solid white;
+    padding: 0;
+    background-color:orange;
+}
+
+#matrix td input{
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: 1px trasparent;
+    font-weight:bold;
+}
+
+.node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 3px;
+}
+
+.node text { font: 12px sans-serif; }
+
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+}
+
+svg {
+    width: 100%;
+    height: 100%;
+    float:left;
+    display:block;
+}

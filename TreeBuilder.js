@@ -1,3 +1,58 @@
+function eqSet(as, bs) {
+    if (as.size !== bs.size) return false;
+    for (var a of as) if (!bs.has(a)) return false;
+    return true;
+}
+
+function additiveCheck(d) {
+    var history = []
+    for (var i in d) {
+        for (var j in d) {
+            for (var k in d) {
+                for (var l in d) {
+                    if ((i!=j) && (i!=k) && (i!=l) && (j!=k) && (j!=l) && (k!=l)) {
+                        var d1 = d[i][j] + d[k][l],
+                            d2 = d[i][k] + d[j][l],
+                            d3 = d[i][l] + d[j][k];
+                        if ((d1 <= d2) && (d2 == d3)) {
+                            var cur = new Set([i,j,k,l]);
+                            history.push(cur);
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+    for (var i in d) {
+        for (var j in d) {
+            for (var k in d) {
+                for (var l in d) {
+                    if ((i!=j) && (i!=k) && (i!=l) && (j!=k) && (j!=l) && (k!=l)) {
+                        var check = false;
+                        for (var x in history) {
+                            var cur = history[x];
+                            var temp = new Set([i,j,k,l]);
+                            var cur_check = eqSet(cur, temp);
+                            if (cur_check) {
+                                check = true;
+                                break;
+                            }
+                        }
+                        if (!check) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return true;
+
+}
+
 function dict_to_tree(d) {
     var ret = [],
         node_dict = {},
@@ -53,6 +108,9 @@ function generateTree() {
     // var treeDict = {"internal0": {"a":2,"b":0,"c":2}, "a":{"internal0":2}, "b":{"internal0":0}, "c":{"internal0":2}};
     // var treeDict0 = {"internal0": {"a":1,"b":1,"internal1":2}, "a":{"internal0":1}, "b":{"internal0":1}, "internal1":{"c":1,"d":1,"internal0":2}, "c":{"internal1":1}, "d":{"internal1":1}};
 
+    var error_msg = document.getElementById("error_msg");
+    error_msg.innerText = "";
+
     d3.select("svg").remove();
 
     var matrix_dict = {};
@@ -62,7 +120,8 @@ function generateTree() {
             var cur_val = document.getElementById(cur_id).value;
             var d = parseInt(cur_val);
             if (isNaN(d)) {
-                console.log("Not Integer Error");
+                var error_msg = document.getElementById("error_msg");
+                error_msg.innerText = "PLEASE INPUT VALID INTEGERS INTO TABLE.";
                 return;
             }
             i_key = Nodes[i];
@@ -78,6 +137,14 @@ function generateTree() {
             matrix_dict[i_key][i_key] = 0;
             matrix_dict[j_key][j_key] = 0;
         }
+    }
+
+    var add_check = additiveCheck(matrix_dict);
+    console.log(add_check);
+    if (!add_check) {
+        var error_msg = document.getElementById("error_msg");
+        error_msg.innerText = "PLEASE INPUT VALID ADDITIVE MATRIX.";
+        return;
     }
 
     var treeDict = neighborJoin(matrix_dict);
@@ -181,6 +248,11 @@ function min_S_value(D, u) {
 }
 
 function drawTree(source) {
+    var outputlabel = document.getElementById("outputlabel");
+    outputlabel.innerHTML = "Output Phylogeny Tree:";
+    outputlabel.setAttribute("style", "margin-left:3em;");
+    console.log(outputlabel);
+
     // ************** Generate the tree diagram	 *****************
     var margin = {top: 40, right: 120, bottom: 20, left: 120},
             width = 960 - margin.right - margin.left,
@@ -199,7 +271,7 @@ function drawTree(source) {
         .attr("height", height + margin.top + margin.bottom)
         .attr("id", "tree")
         .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", "translate(" + 0 + "," + margin.top + ")");
 
     // Compute the new tree layout.
     var nodes = tree.nodes(source).reverse(),
@@ -220,6 +292,13 @@ function drawTree(source) {
 
     nodeEnter.append("circle")
         .attr("r", 10)
+        .attr("stroke", function(d) {
+            if (d.children == null) {
+                return "cornflowerblue";
+            } else {
+                return "forestgreen";
+            }
+        })
         .style("fill", "#fff");
 
     nodeEnter.append("text")
@@ -276,4 +355,35 @@ function drawTree(source) {
             y: function(d){return d.y;}
         });
 
+    // Draw Box Around SVG
+    // Citation: https://stackoverflow.com/questions/17218108/rectangle-border-around-svg-text
+    var svgcanvas = d3.select('svg');
+
+    var svg_var = document.getElementById("tree");
+
+    var selection = d3.select(svg_var);
+    var rect = svg_var.getBBox();
+    var offset = 10; // enlarge rect box 2 px on left & right side
+    var yoffset = 10;
+    selection.classed("mute", (selection.classed("mute") ? false : true));
+
+    pathinfo = [
+        {x: rect.x-offset, y: rect.y-yoffset },
+        {x: rect.x+offset + rect.width, y: rect.y-yoffset},
+        {x: rect.x+offset + rect.width, y: rect.y + rect.height },
+        {x: rect.x-offset, y: rect.y + rect.height},
+        {x: rect.x-offset, y: rect.y-yoffset},
+    ];
+
+    // Specify the function for generating path data
+    var d3line = d3.svg.line()
+        .x(function(d){return d.x;})
+        .y(function(d){return d.y;})
+        .interpolate("linear");
+    // Draw the line
+    svgcanvas.append("svg:path")
+        .attr("d", d3line(pathinfo))
+        .style("stroke-width", 3)
+        .style("stroke", "lightcoral")
+        .style("fill", "none");
 }

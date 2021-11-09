@@ -11,45 +11,48 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
     <script src="TreeBuilder.js"></script>
 </head>
+<body style="background:lavender;">
+    <script>
 
-<script>
+    $(document).ready(function(){
+        constructMatrix();
+    });
+    </script>
 
-$(document).ready(function(){
-    constructMatrix();
-});
-</script>
+    <div style="width: 100%;background:lavender; padding: 0; margin: 0;">
+        <div id="leftdiv" style="width: 50%; height: 100%; float: left; background: lavender; margin: 0;"> 
+            <h2>Interactive Neighbor Joining Algorithm</h2>
+            <p>
+            Placeholder for Introduction...
+            </p>
 
-<div style="width: 100%;">
-    <div id="leftdiv" style="width: 50%; height: 100%; float: left;"> 
-        <h2>Interactive Neighbor Joining Algorithm</h2>
-        <p>
-        Placeholder for Introduction...
-        </p>
+            <table>
+            <tr>
+                <td><label>Number of Nodes</label></td>
+                <td colspan="4"><input id="node_num" class='seq' value="4" maxlength="40" /></label></td>
+                <td rowspan="10" id="result"></td>
+            </tr>
+            <tr>
+                <td><label>Nodes</label></td>
+                <td colspan="4"><input id="nodes" class='seq' value="a,b,c,d" maxlength="40" /></td>
+            </tr>
+            <tr>
+            <td colspan="4">
+                <button onclick="redrawMatrix();">Generate Empty Matrix</button>
+                <button onclick="generateTree();">Generate Phylogeny Tree</button>
+            </tr>
 
-        <table>
-        <tr>
-            <td><label>Number of Nodes</label></td>
-            <td colspan="4"><input id="node_num" class='seq' value="4" maxlength="40" /></label></td>
-            <td rowspan="10" id="result"></td>
-        </tr>
-        <tr>
-            <td><label>Nodes</label></td>
-            <td colspan="4"><input id="nodes" class='seq' value="0,1,2,3" maxlength="40" /></td>
-        </tr>
-        <tr>
-        <td colspan="4">
-            <button onclick="redrawMatrix();">Generate Empty Matrix</button>
-            <button onclick="generateTree();">Generate Phylogeny Tree</button>
-        </tr>
+            </table>
 
-        </table>
+            <table id="matrix">
 
-        <table id="matrix">
-
-        </table>
+            </table>
+            <p id="error_msg" style="color:red;font-weight:bold;">
+            </p>
+        </div>
+        <div id="rightdiv" style="width: 50%; height: 100%; float: right; background: lavender; margin: 0;"> 
+        <h2 id="outputlabel"></h2>
+        </div>
     </div>
-    <div id="rightdiv" style="width: 50%; height: 100%; float: right;"> 
-    </div>
-</div>
-
+</body>
 </html>

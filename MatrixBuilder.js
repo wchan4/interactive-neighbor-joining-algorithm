@@ -1,5 +1,5 @@
-var N = 5,
-    Nodes = ["a", "b", "c", "d", "e"];
+var N = 4,
+    Nodes = ["a", "b", "c", "d"];
 
 
 function parseArray(str) {
@@ -12,15 +12,29 @@ function parseArray(str) {
 }
 
 function redrawMatrix() {
-    new_N = $('#node_num').val();
-    new_Nodes = $('#nodes').val();
+    var error_msg = document.getElementById("error_msg");
+    error_msg.innerText = ""; 
 
-    N = parseInt(new_N)
+    var new_N = $('#node_num').val();
+    var new_Nodes = $('#nodes').val();
+
+    var temp_N= parseInt(new_N)
+    if (isNaN(temp_N)) {
+        var error_msg = document.getElementById("error_msg");
+        error_msg.innerText = "PLEASE GIVE VALID INTEGER FOR \"NUMBER OF NODES\".";
+        return;
+    } else {
+        N = temp_N;
+    }
     Nodes = parseArray(new_Nodes)
 
     if (N == Nodes.length) {
         $("#matrix tr").remove();
         constructMatrix();
+    } else {
+        var error_msg = document.getElementById("error_msg");
+        error_msg.innerText = "\"NUMBER OF NODES\" MUST EQUAL LENGTH OF \"NODES\".";
+        return;
     }
     console.log(N);
     console.log(Nodes);

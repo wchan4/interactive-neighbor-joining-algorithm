@@ -1,3 +1,34 @@
+var show_labels = false;
+var order = [];
+
+function showOrdering() {
+    if (!show_labels) {
+        var order_text = document.getElementById("order_text");
+
+        var ordering_text = "Format: (node1,node2: edge)\n";
+        var n = order.length
+        for (var i in order) {
+            var cur = order[i];
+            var cur_str = "(" + cur[0] + "," + cur[1] + ": " + cur[2] + ")";
+            if (i != n-1) {
+                cur_str = cur_str + " -> ";
+            }
+            ordering_text = ordering_text + cur_str;
+        }
+        order_text.innerText = ordering_text;
+        show_labels = true;
+        generateTree();
+    } else {
+        var order_text = document.getElementById("order_text");
+        order_text.innerText = "";
+
+        order = [];
+
+        show_labels = false;
+        generateTree();
+    }
+}
+
 function eqSet(as, bs) {
     if (as.size !== bs.size) return false;
     for (var a of as) if (!bs.has(a)) return false;
@@ -190,6 +221,11 @@ function neighborJoin(D) {
         T[r][j] = 0.5*(D[i][j] + (u[j] - u[i])/(len_D-2));
         T[j][r] = 0.5*(D[i][j] + (u[j] - u[i])/(len_D-2));
 
+        var tup0 = [i,r,T[r][i]];
+        var tup1 = [j,r,T[r][j]];
+        order.push(tup0);
+        order.push(tup1);
+
         D[r] = {};
         for (var m in D) {
             if ((m != i) && (m != j) && (m != r)) {
@@ -209,9 +245,10 @@ function neighborJoin(D) {
         r_count = r_count + 1;
     }
 
+    var check2 = false;
     for (var m in D) {
         for (var n in D) {
-            if (m != n) {
+            if ((m != n) && !check2) {
                 if (!(m in T)) {
                     T[m] = {};
                 }
@@ -220,6 +257,10 @@ function neighborJoin(D) {
                 }
                 T[m][n] = D[m][n];
                 T[n][m] = D[n][m];
+
+                var tup = [n,m,T[n][m]];
+                order.push(tup);
+                check2 = true;
             }
         }
     }
@@ -251,7 +292,9 @@ function drawTree(source) {
     var outputlabel = document.getElementById("outputlabel");
     outputlabel.innerHTML = "Output Phylogeny Tree:";
     outputlabel.setAttribute("style", "margin-left:3em;");
-    console.log(outputlabel);
+
+    var order_button = document.getElementById("order_button");
+    order_button.setAttribute("style", "display:inline-block;margin-left:5.5em;");
 
     // ************** Generate the tree diagram	 *****************
     var margin = {top: 40, right: 120, bottom: 20, left: 120},
@@ -307,7 +350,7 @@ function drawTree(source) {
         .attr("dy", ".35em")
         .attr("text-anchor", "middle")
         .text(function(d) { 
-            if (d.children == null) {
+            if ((d.children == null) || (show_labels)) {
                 return d.name; 
             } else {
                 return "";

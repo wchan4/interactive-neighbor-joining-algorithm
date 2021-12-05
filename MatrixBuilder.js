@@ -22,6 +22,7 @@ function redrawMatrix() {
     if (isNaN(temp_N)) {
         var error_msg = document.getElementById("error_msg");
         error_msg.innerText = "PLEASE GIVE VALID INTEGER FOR \"NUMBER OF NODES\".";
+
         return;
     } else {
         N = temp_N;

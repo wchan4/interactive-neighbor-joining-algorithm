@@ -17,15 +17,146 @@ function showOrdering() {
         }
         order_text.innerText = ordering_text;
         show_labels = true;
-        generateTree();
+        // generateTree();
     } else {
         var order_text = document.getElementById("order_text");
         order_text.innerText = "";
 
-        order = [];
-
         show_labels = false;
-        generateTree();
+        // generateTree();
+    }
+}
+
+// https://stackoverflow.com/questions/4122268/using-settimeout-synchronously-in-javascript
+function pause(milliseconds) {
+	var dt = new Date();
+	while ((new Date()) - dt <= milliseconds) { /* Do nothing */ }
+}
+
+function highlight(i) {
+    var node1 = order[i][0];
+    var node2 = order[i+1][0];
+    var node3 = order[i][1];
+
+    var node1_id = "circle:" + node1;
+    var node2_id = "circle:" + node2;
+    var node3_id = "circle:" + node3;
+
+    var node1_obj = document.getElementById(node1_id);
+    var node2_obj = document.getElementById(node2_id);
+    var node3_obj = document.getElementById(node3_id);
+
+    highlight_color = "yellow";
+
+    node1_obj.setAttribute("stroke", highlight_color);
+    node2_obj.setAttribute("stroke", highlight_color);
+    node3_obj.setAttribute("stroke", highlight_color);
+}
+
+function unhighlight(new_i) {
+    i = new_i - 2
+    var node1 = order[i][0];
+    var node2 = order[i+1][0];
+    var node3 = order[i][1];
+
+    var node1_id = "circle:" + node1;
+    var node2_id = "circle:" + node2;
+    var node3_id = "circle:" + node3;
+
+    var node1_obj = document.getElementById(node1_id);
+    var node2_obj = document.getElementById(node2_id);
+    var node3_obj = document.getElementById(node3_id);
+
+    internal_color = "forestgreen";
+    leaf_color = "cornflowerblue";
+
+    if (node1_id.includes("internal")) {
+        node1_obj.setAttribute("stroke", internal_color);
+    } else {
+        node1_obj.setAttribute("stroke", leaf_color);
+    }
+
+    if (node2_id.includes("internal")) {
+        node2_obj.setAttribute("stroke", internal_color);
+    } else {
+        node2_obj.setAttribute("stroke", leaf_color);
+    }
+
+    if (node3_id.includes("internal")) {
+        node3_obj.setAttribute("stroke", internal_color);
+    } else {
+        node3_obj.setAttribute("stroke", leaf_color);
+    }
+
+}
+
+function minihighlight(i) {
+    var node1 = order[i][0];
+    var node2 = order[i][1];
+
+    var node1_id = "circle:" + node1;
+    var node2_id = "circle:" + node2;
+
+    var node1_obj = document.getElementById(node1_id);
+    var node2_obj = document.getElementById(node2_id);
+
+    highlight_color = "yellow";
+
+    node1_obj.setAttribute("stroke", highlight_color);
+    node2_obj.setAttribute("stroke", highlight_color);
+}
+
+function miniunhighlight(i) {
+    var node1 = order[i][0];
+    var node2 = order[i][1];
+
+    var node1_id = "circle:" + node1;
+    var node2_id = "circle:" + node2;
+
+    var node1_obj = document.getElementById(node1_id);
+    var node2_obj = document.getElementById(node2_id);
+
+    internal_color = "forestgreen";
+    leaf_color = "cornflowerblue";
+
+    if (node1_id.includes("internal")) {
+        node1_obj.setAttribute("stroke", internal_color);
+    } else {
+        node1_obj.setAttribute("stroke", leaf_color);
+
+    }
+
+    if (node2_id.includes("internal")) {
+        node2_obj.setAttribute("stroke", internal_color);
+    } else {
+        node2_obj.setAttribute("stroke", leaf_color);
+
+    }
+}
+
+// https://www.w3schools.com/js/js_htmldom_animate.asp
+function showAnimation() {
+    let id = null;
+    let i = 0;
+    clearInterval(id);
+    id = setInterval(frame, 800);
+    function frame() {
+        console.log(i)
+        if (i == 0) {
+            highlight(i);
+            i = i + 2;
+        } else if (i < order.length - 1) {
+            unhighlight(i);
+            highlight(i);
+            i = i + 2;
+        } else if (i < order.length + 1) {
+            unhighlight(order.length-1);
+            minihighlight(i);
+            i = i + 2;
+        } else {
+            miniunhighlight(order.length-1);
+            clearInterval(id);
+        }
     }
 }
 
@@ -139,6 +270,8 @@ function generateTree() {
     // var treeDict = {"internal0": {"a":2,"b":0,"c":2}, "a":{"internal0":2}, "b":{"internal0":0}, "c":{"internal0":2}};
     // var treeDict0 = {"internal0": {"a":1,"b":1,"internal1":2}, "a":{"internal0":1}, "b":{"internal0":1}, "internal1":{"c":1,"d":1,"internal0":2}, "c":{"internal1":1}, "d":{"internal1":1}};
 
+    order = [];
+
     var error_msg = document.getElementById("error_msg");
     error_msg.innerText = "";
 
@@ -153,6 +286,16 @@ function generateTree() {
             if (isNaN(d)) {
                 var error_msg = document.getElementById("error_msg");
                 error_msg.innerText = "PLEASE INPUT VALID INTEGERS INTO TABLE.";
+                
+                var outputlabel = document.getElementById("outputlabel");
+                outputlabel.innerHTML = "";
+
+                var order_button = document.getElementById("order_button");
+                order_button.setAttribute("style", "display:none");
+
+                var animate_button = document.getElementById("animate_button");
+                animate_button.setAttribute("style", "display:none");
+
                 return;
             }
             i_key = Nodes[i];
@@ -171,10 +314,19 @@ function generateTree() {
     }
 
     var add_check = additiveCheck(matrix_dict);
-    console.log(add_check);
     if (!add_check) {
         var error_msg = document.getElementById("error_msg");
         error_msg.innerText = "PLEASE INPUT VALID ADDITIVE MATRIX.";
+
+        var outputlabel = document.getElementById("outputlabel");
+        outputlabel.innerHTML = "";
+
+        var order_button = document.getElementById("order_button");
+        order_button.setAttribute("style", "display:none");
+
+        var animate_button = document.getElementById("animate_button");
+        animate_button.setAttribute("style", "display:none");
+
         return;
     }
 
@@ -296,6 +448,9 @@ function drawTree(source) {
     var order_button = document.getElementById("order_button");
     order_button.setAttribute("style", "display:inline-block;margin-left:5.5em;");
 
+    var animate_button = document.getElementById("animate_button");
+    animate_button.setAttribute("style", "display:inline-block;");
+
     // ************** Generate the tree diagram	 *****************
     var margin = {top: 40, right: 120, bottom: 20, left: 120},
             width = 960 - margin.right - margin.left,
@@ -341,6 +496,9 @@ function drawTree(source) {
             } else {
                 return "forestgreen";
             }
+        })
+        .attr("id", function(d){
+            return "circle:" + d.name;
         })
         .style("fill", "#fff");
 

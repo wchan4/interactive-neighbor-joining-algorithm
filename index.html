@@ -21,13 +21,14 @@
 
     <div style="width: 100%;background:lavender; padding: 0; margin: 0;">
         <div id="leftdiv" style="width: 50%; height: 100%; float: left; background: lavender; margin: 0;"> 
-            <h2>Interactive Neighbor Joining Algorithm</h2>
+            <h2>Interactive Neighbor-Joining Algorithm</h2>
             <p>
-            The Interactive Neighbor-Joining Algorithm seeks to provide an easy-to-use tool for visualizing the <br>Neighbor-Joining algorithm, given an additive matrix. <br> <br>
-            You can use the "Number of Nodes" input to determine the size of your matrix, and the "Nodes" input to determine the name of your nodes.
+            The Interactive Neighbor-Joining Algorithm seeks to provide an easy-to-use tool for visualizing the <br>Neighbor-Joining algorithm, given an additive distance matrix. <br> <br>
+            You can use the "Number of Nodes" input to determine the size of your matrix, and the "Nodes" input to determine the matrix's column/row names.
             <br> <br>
-            <b>Generate Empty Matrix:</b> Generate a new empty matrix based on size and sequece array. <br>
-            <b>Generate Phylogeny Tree:</b> Generate the phylogeny tree based on the filled-in additive matrix. <br>
+            <b>Button Functions</b> <br>
+            <b>Generate Empty Matrix:</b> Generate a new empty matrix based on size and sequence array. <br>
+            <b>Generate Phylogenetic Tree:</b> Generate the phylogenetic tree based on the filled-in additive matrix. <br>
             <b>Toggle Neighbor-Joining Order:</b> Toggle text that gives overview of the order in which edges are created.
             <b>Show Ordering Animation:</b> Show animation that highlights the order in which nodes are clustered.
             </p>
@@ -45,7 +46,7 @@
             <tr>
             <td colspan="4">
                 <button onclick="redrawMatrix();">Generate Empty Matrix</button>
-                <button onclick="generateTree();">Generate Phylogeny Tree</button>
+                <button onclick="generateTree();">Generate Phylogenetic Tree</button>
             </tr>
 
             </table>
